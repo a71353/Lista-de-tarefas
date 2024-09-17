@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Tarefas.Models.Tarefa>
+
+@{
+    ViewData["Title"] = "Lista de Tarefas";
+}
+
+<h1>Lista de Tarefas</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Criar Nova Tarefa</a>
+</p>
+
+@{
+    // Agrupa as tarefas pela data de vencimento
+    var tarefasAgrupadas = Model.GroupBy(t => t.DataVencimento.Date)
+                                .OrderBy(g => g.Key);
+}
+
+<div class="container">
+    <div class="row">
+        @foreach (var grupo in tarefasAgrupadas)
+        {
+            <div class="col-md-6">
+                <h3>@grupo.Key.ToString("dd/MM/yyyy")</h3> <!-- Cabeçalho para cada dia -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+                            <th>@Html.DisplayNameFor(model => model.Descricao)</th>
+                            <th>@Html.DisplayNameFor(model => model.Concluida)</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in grupo)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Concluida)</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a> |
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
